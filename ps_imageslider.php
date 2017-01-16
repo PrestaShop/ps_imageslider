@@ -32,6 +32,10 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+if (version_compare(_PS_VERSION_, '1.7.0.0', '<')) {
+    return;
+}
+
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 include_once(_PS_MODULE_DIR_.'ps_imageslider/Ps_HomeSlide.php');
