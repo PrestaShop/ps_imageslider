@@ -68,7 +68,7 @@ class Ps_HomeSlide extends ObjectModel
 		$res = parent::add($autodate, $null_values);
 		$res &= Db::getInstance()->execute('
 			INSERT INTO `'._DB_PREFIX_.'homeslider` (`id_shop`, `id_homeslider_slides`)
-			VALUES('.(int)$id_shop.', '.(int)$this->id.')'
+			VALUES('.(int) $id_shop.', '.(int) $this->id.')'
 		);
 		return $res;
 	}
@@ -89,7 +89,7 @@ class Ps_HomeSlide extends ObjectModel
 
 		$res &= Db::getInstance()->execute('
 			DELETE FROM `'._DB_PREFIX_.'homeslider`
-			WHERE `id_homeslider_slides` = '.(int)$this->id
+			WHERE `id_homeslider_slides` = '.(int) $this->id
 		);
 
 		$res &= parent::delete();
@@ -105,17 +105,17 @@ class Ps_HomeSlide extends ObjectModel
 		$max = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 			SELECT MAX(hss.`position`) as position
 			FROM `'._DB_PREFIX_.'homeslider_slides` hss, `'._DB_PREFIX_.'homeslider` hs
-			WHERE hss.`id_homeslider_slides` = hs.`id_homeslider_slides` AND hs.`id_shop` = '.(int)$id_shop
+			WHERE hss.`id_homeslider_slides` = hs.`id_homeslider_slides` AND hs.`id_shop` = '.(int) $id_shop
 		);
 
-		if ((int)$max == (int)$id_slide)
+		if ((int) $max == (int) $id_slide)
 			return true;
 
 		$rows = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 			SELECT hss.`position` as position, hss.`id_homeslider_slides` as id_slide
 			FROM `'._DB_PREFIX_.'homeslider_slides` hss
 			LEFT JOIN `'._DB_PREFIX_.'homeslider` hs ON (hss.`id_homeslider_slides` = hs.`id_homeslider_slides`)
-			WHERE hs.`id_shop` = '.(int)$id_shop.' AND hss.`position` > '.(int)$this->position
+			WHERE hs.`id_shop` = '.(int) $id_shop.' AND hss.`position` > '.(int) $this->position
 		);
 
 		foreach ($rows as $row)
@@ -134,7 +134,7 @@ class Ps_HomeSlide extends ObjectModel
 		$result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 			SELECT hs.`id_shop`
 			FROM `'._DB_PREFIX_.'homeslider` hs
-			WHERE hs.`id_homeslider_slides` = '.(int)$id_slide
+			WHERE hs.`id_homeslider_slides` = '.(int) $id_slide
 		);
 
 		if (!is_array($result))
@@ -143,7 +143,7 @@ class Ps_HomeSlide extends ObjectModel
 		$return = array();
 
 		foreach ($result as $id_shop)
-			$return[] = (int)$id_shop['id_shop'];
+			$return[] = (int) $id_shop['id_shop'];
 
 		return $return;
 	}
