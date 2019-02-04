@@ -39,10 +39,15 @@ include_once(_PS_MODULE_DIR_.'ps_imageslider/Ps_HomeSlide.php');
 class Ps_ImageSlider extends Module implements WidgetInterface
 {
     protected $_html = '';
+
     protected $default_width = 779;
+
     protected $default_speed = 5000;
+
     protected $default_pause_on_hover = 1;
+
     protected $default_wrap = 1;
+
     protected $templateFile;
 
     public function __construct()
@@ -1011,7 +1016,6 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                         $this->trans('Unable to get slide shop association information (id_slide: %d)', array((int)$id_slide), 'Modules.Imageslider.Admin') .
                 '</p>';
     }
-
 
     protected function getCurrentShopInfoMsg()
     {

@@ -27,12 +27,19 @@
 class Ps_HomeSlide extends ObjectModel
 {
 	public $title;
+
 	public $description;
+
 	public $url;
+
 	public $legend;
+
 	public $image;
+
 	public $active;
+
 	public $position;
+
 	public $id_shop;
 
 	/**
@@ -147,5 +154,4 @@ class Ps_HomeSlide extends ObjectModel
 
 		return $return;
 	}
-
 }
