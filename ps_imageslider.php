@@ -460,8 +460,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 /* Uploads image and sets slide */
                 $type = Tools::strtolower(Tools::substr(strrchr($_FILES['image_'.$language['id_lang']]['name'], '.'), 1));
                 $imagesize = @getimagesize($_FILES['image_'.$language['id_lang']]['tmp_name']);
-                if (isset($_FILES['image_'.$language['id_lang']], $_FILES['image_'.$language['id_lang']]['tmp_name']) 
-                     &&
+                if (isset($_FILES['image_'.$language['id_lang']], $_FILES['image_'.$language['id_lang']]['tmp_name']) &&
                     !empty($_FILES['image_'.$language['id_lang']]['tmp_name']) &&
                     !empty($imagesize) &&
                     in_array(
