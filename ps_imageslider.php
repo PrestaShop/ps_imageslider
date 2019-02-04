@@ -1019,7 +1019,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
 
         if (Shop::isFeatureActive()) {
             if (Shop::getContext() == Shop::CONTEXT_SHOP) {
-                $shop_info = $this->trans('The modifications will be applied to shop: %s', array($this->context->shop->name),'Modules.Imageslider.Admin');
+                $shop_info = $this->trans('The modifications will be applied to shop: %s', array($this->context->shop->name), 'Modules.Imageslider.Admin');
             } else if (Shop::getContext() == Shop::CONTEXT_GROUP) {
                 $shop_info = $this->trans('The modifications will be applied to this group: %s', array(Shop::getContextShopGroup()->name), 'Modules.Imageslider.Admin');
             } else {
