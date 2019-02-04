@@ -38,22 +38,22 @@ class Ps_HomeSlide extends ObjectModel
 	/**
 	 * @see ObjectModel::$definition
 	 */
-	public static $definition = array(
+	public static $definition = [
 		'table' => 'homeslider_slides',
 		'primary' => 'id_homeslider_slides',
 		'multilang' => true,
-		'fields' => array(
-			'active' =>			array('type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => true),
-			'position' =>		array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt', 'required' => true),
+		'fields' => [
+			'active' =>			['type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => true],
+			'position' =>		['type' => self::TYPE_INT, 'validate' => 'isunsignedInt', 'required' => true],
 
 			// Lang fields
-			'description' =>	array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 4000),
-			'title' =>			array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 255),
-			'legend' =>			array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 255),
-			'url' =>			array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isUrl', 'required' => true, 'size' => 255),
-			'image' =>			array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 255),
-		)
-	);
+			'description' =>	['type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 4000],
+			'title' =>			['type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 255],
+			'legend' =>			['type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 255],
+			'url' =>			['type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isUrl', 'required' => true, 'size' => 255],
+			'image' =>			['type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 255],
+		]
+	];
 
 	public	function __construct($id_slide = null, $id_lang = null, $id_shop = null, Context $context = null)
 	{
@@ -140,7 +140,7 @@ class Ps_HomeSlide extends ObjectModel
 		if (!is_array($result))
 			return false;
 
-		$return = array();
+		$return = [];
 
 		foreach ($result as $id_shop)
 			$return[] = (int)$id_shop['id_shop'];
