@@ -23,9 +23,9 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
-include_once('../../config/config.inc.php');
-include_once('../../init.php');
-include_once('ps_imageslider.php');
+include_once '../../config/config.inc.php';
+include_once '../../init.php';
+include_once 'ps_imageslider.php';
 
 $home_slider = new Ps_ImageSlider();
 $slides = array();
