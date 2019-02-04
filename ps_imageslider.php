@@ -663,8 +663,9 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         $this->context = Context::getContext();
         $images = array();
 
-        if (!isset($id_shop))
+        if (!isset($id_shop)) {
             $id_shop = $this->context->shop->id;
+        }
 
         $results = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
             SELECT hssl.`image`, hssl.`id_lang`
@@ -675,8 +676,9 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             ($active ? ' AND hss.`active` = 1' : ' ')
         );
 
-        foreach ($results as $result)
+        foreach ($results as $result) {
             $images[$result['id_lang']] = $result['image'];
+        }
 
         return $images;
     }
@@ -1020,10 +1022,12 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         if (Shop::isFeatureActive()) {
             if (Shop::getContext() == Shop::CONTEXT_SHOP) {
                 $shop_info = $this->trans('The modifications will be applied to shop: %s', array($this->context->shop->name),'Modules.Imageslider.Admin');
-            } else if (Shop::getContext() == Shop::CONTEXT_GROUP) {
-                $shop_info = $this->trans('The modifications will be applied to this group: %s', array(Shop::getContextShopGroup()->name), 'Modules.Imageslider.Admin');
             } else {
-                $shop_info = $this->trans('The modifications will be applied to all shops and shop groups', array(), 'Modules.Imageslider.Admin');
+                if (Shop::getContext() == Shop::CONTEXT_GROUP) {
+                    $shop_info = $this->trans('The modifications will be applied to this group: %s', array(Shop::getContextShopGroup()->name), 'Modules.Imageslider.Admin');
+                } else {
+                    $shop_info = $this->trans('The modifications will be applied to all shops and shop groups', array(), 'Modules.Imageslider.Admin');
+                }
             }
 
             return '<div class="alert alert-info">'.

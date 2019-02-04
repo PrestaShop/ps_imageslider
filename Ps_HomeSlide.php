@@ -78,11 +78,12 @@ class Ps_HomeSlide extends ObjectModel
         $res = true;
 
         $images = $this->image;
-        foreach ($images as $image)
-        {
-            if (preg_match('/sample/', $image) === 0)
-                if ($image && file_exists(dirname(__FILE__).'/images/'.$image))
+        foreach ($images as $image) {
+            if (preg_match('/sample/', $image) === 0) {
+                if ($image && file_exists(dirname(__FILE__).'/images/'.$image)) {
                     $res &= @unlink(dirname(__FILE__).'/images/'.$image);
+                }
+            }
         }
 
         $res &= $this->reOrderPositions();
@@ -108,8 +109,9 @@ class Ps_HomeSlide extends ObjectModel
 			WHERE hss.`id_homeslider_slides` = hs.`id_homeslider_slides` AND hs.`id_shop` = '.(int)$id_shop
         );
 
-        if ((int)$max == (int)$id_slide)
+        if ((int)$max == (int)$id_slide) {
             return true;
+        }
 
         $rows = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 			SELECT hss.`position` as position, hss.`id_homeslider_slides` as id_slide
@@ -118,8 +120,7 @@ class Ps_HomeSlide extends ObjectModel
 			WHERE hs.`id_shop` = '.(int)$id_shop.' AND hss.`position` > '.(int)$this->position
         );
 
-        foreach ($rows as $row)
-        {
+        foreach ($rows as $row) {
             $current_slide = new Ps_HomeSlide($row['id_slide']);
             --$current_slide->position;
             $current_slide->update();
@@ -137,15 +138,16 @@ class Ps_HomeSlide extends ObjectModel
 			WHERE hs.`id_homeslider_slides` = '.(int)$id_slide
         );
 
-        if (!is_array($result))
+        if (!is_array($result)) {
             return false;
+        }
 
         $return = array();
 
-        foreach ($result as $id_shop)
+        foreach ($result as $id_shop) {
             $return[] = (int)$id_shop['id_shop'];
+        }
 
         return $return;
     }
-
 }
