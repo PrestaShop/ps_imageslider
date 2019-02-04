@@ -124,7 +124,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
     }
 
     /**
-     * Adds samples
+     * Adds samples.
      */
     protected function installSamples()
     {
@@ -169,7 +169,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
     }
 
     /**
-     * Creates tables
+     * Creates tables.
      */
     protected function createTables()
     {
@@ -210,7 +210,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
     }
 
     /**
-     * deletes tables
+     * deletes tables.
      */
     protected function deleteTables()
     {
