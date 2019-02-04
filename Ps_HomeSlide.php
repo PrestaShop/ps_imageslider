@@ -52,7 +52,7 @@ class Ps_HomeSlide extends ObjectModel
             'legend' =>			array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 255),
             'url' =>			array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isUrl', 'required' => true, 'size' => 255),
             'image' =>			array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 255),
-        )
+        ),
     );
 
     public	function __construct($id_slide = null, $id_lang = null, $id_shop = null, Context $context = null)

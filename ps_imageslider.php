@@ -469,7 +469,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                             'jpg',
                             'gif',
                             'jpeg',
-                            'png'
+                            'png',
                         )
                     ) &&
                     in_array($type, array('jpg', 'gif', 'jpeg', 'png'))
@@ -721,7 +721,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             array(
                 'link' => $this->context->link,
                 'slides' => $slides,
-                'image_baseurl' => $this->_path.'images/'
+                'image_baseurl' => $this->_path.'images/',
             )
         );
 
@@ -734,7 +734,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             'form' => array(
                 'legend' => array(
                     'title' => $this->getTranslator()->trans('Slide information', array(), 'Modules.Imageslider.Admin'),
-                    'icon' => 'icon-cogs'
+                    'icon' => 'icon-cogs',
                 ),
                 'input' => array(
                     array(
@@ -743,7 +743,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                         'name' => 'image',
                         'required' => true,
                         'lang' => true,
-                        'desc' => $this->getTranslator()->trans('Maximum image size: %s.', array(ini_get('upload_max_filesize')), 'Admin.Global')
+                        'desc' => $this->getTranslator()->trans('Maximum image size: %s.', array(ini_get('upload_max_filesize')), 'Admin.Global'),
                     ),
                     array(
                         'type' => 'text',
@@ -780,19 +780,19 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                             array(
                                 'id' => 'active_on',
                                 'value' => 1,
-                                'label' => $this->getTranslator()->trans('Yes', array(), 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('Yes', array(), 'Admin.Global'),
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => 0,
-                                'label' => $this->getTranslator()->trans('No', array(), 'Admin.Global')
-                            )
+                                'label' => $this->getTranslator()->trans('No', array(), 'Admin.Global'),
+                            ),
                         ),
                     ),
                 ),
                 'submit' => array(
                     'title' => $this->getTranslator()->trans('Save', array(), 'Admin.Actions'),
-                )
+                ),
             ),
         );
 
@@ -831,12 +831,12 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             'base_url' => $this->context->shop->getBaseURL(),
             'language' => array(
                 'id_lang' => $language->id,
-                'iso_code' => $language->iso_code
+                'iso_code' => $language->iso_code,
             ),
             'fields_value' => $this->getAddFieldsValues(),
             'languages' => $this->context->controller->getLanguages(),
             'id_language' => $this->context->language->id,
-            'image_baseurl' => $this->_path.'images/'
+            'image_baseurl' => $this->_path.'images/',
         );
 
         $helper->override_folder = '/';
@@ -856,7 +856,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             'form' => array(
                 'legend' => array(
                     'title' => $this->getTranslator()->trans('Settings', array(), 'Admin.Global'),
-                    'icon' => 'icon-cogs'
+                    'icon' => 'icon-cogs',
                 ),
                 'input' => array(
                     array(
@@ -865,7 +865,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                         'name' => 'HOMESLIDER_SPEED',
                         'suffix' => 'milliseconds',
                         'class' => 'fixed-width-sm',
-                        'desc' => $this->getTranslator()->trans('The duration of the transition between two slides.', array(), 'Modules.Imageslider.Admin')
+                        'desc' => $this->getTranslator()->trans('The duration of the transition between two slides.', array(), 'Modules.Imageslider.Admin'),
                     ),
                     array(
                         'type' => 'switch',
@@ -876,13 +876,13 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                             array(
                                 'id' => 'active_on',
                                 'value' => 1,
-                                'label' => $this->getTranslator()->trans('Enabled', array(), 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('Enabled', array(), 'Admin.Global'),
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => 0,
-                                'label' => $this->getTranslator()->trans('Disabled', array(), 'Admin.Global')
-                            )
+                                'label' => $this->getTranslator()->trans('Disabled', array(), 'Admin.Global'),
+                            ),
                         ),
                     ),
                     array(
@@ -894,19 +894,19 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                             array(
                                 'id' => 'active_on',
                                 'value' => 1,
-                                'label' => $this->getTranslator()->trans('Enabled', array(), 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('Enabled', array(), 'Admin.Global'),
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => 0,
-                                'label' => $this->getTranslator()->trans('Disabled', array(), 'Admin.Global')
-                            )
+                                'label' => $this->getTranslator()->trans('Disabled', array(), 'Admin.Global'),
+                            ),
                         ),
                     ),
                 ),
                 'submit' => array(
                     'title' => $this->getTranslator()->trans('Save', array(), 'Admin.Actions'),
-                )
+                ),
             ),
         );
 
@@ -925,7 +925,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         $helper->tpl_vars = array(
             'fields_value' => $this->getConfigFieldsValues(),
             'languages' => $this->context->controller->getLanguages(),
-            'id_language' => $this->context->language->id
+            'id_language' => $this->context->language->id,
         );
 
         return $helper->generateForm(array($fields_form));
