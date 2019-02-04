@@ -69,7 +69,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
      */
     public function install()
     {
-        /* Adds Module */
+        // Adds Module
         if (parent::install() &&
             $this->registerHook('displayHeader') &&
             $this->registerHook('displayHome') &&
@@ -78,7 +78,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             $shops = Shop::getContextListShopID();
             $shop_groups_list = array();
 
-            /* Setup each shop */
+            // Setup each shop
             foreach ($shops as $shop_id) {
                 $shop_group_id = (int)Shop::getGroupFromShop($shop_id, true);
 
@@ -86,13 +86,13 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                     $shop_groups_list[] = $shop_group_id;
                 }
 
-                /* Sets up configuration */
+                // Sets up configuration
                 $res = Configuration::updateValue('HOMESLIDER_SPEED', $this->default_speed, false, $shop_group_id, $shop_id);
                 $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover, false, $shop_group_id, $shop_id);
                 $res &= Configuration::updateValue('HOMESLIDER_WRAP', $this->default_wrap, false, $shop_group_id, $shop_id);
             }
 
-            /* Sets up Shop Group configuration */
+            // Sets up Shop Group configuration
             if (count($shop_groups_list)) {
                 foreach ($shop_groups_list as $shop_group_id) {
                     $res &= Configuration::updateValue('HOMESLIDER_SPEED', $this->default_speed, false, $shop_group_id);
@@ -101,15 +101,15 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 }
             }
 
-            /* Sets up Global configuration */
+            // Sets up Global configuration
             $res &= Configuration::updateValue('HOMESLIDER_SPEED', $this->default_speed);
             $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover);
             $res &= Configuration::updateValue('HOMESLIDER_WRAP', $this->default_wrap);
 
-            /* Creates tables */
+            // Creates tables
             $res &= $this->createTables();
 
-            /* Adds samples */
+            // Adds samples
             if ($res) {
                 $this->installSamples();
             }
@@ -152,12 +152,12 @@ class Ps_ImageSlider extends Module implements WidgetInterface
      */
     public function uninstall()
     {
-        /* Deletes Module */
+        // Deletes Module
         if (parent::uninstall()) {
-            /* Deletes tables */
+            // Deletes tables
             $res = $this->deleteTables();
 
-            /* Unsets configuration */
+            // Unsets configuration
             $res &= Configuration::deleteByName('HOMESLIDER_SPEED');
             $res &= Configuration::deleteByName('HOMESLIDER_PAUSE_ON_HOVER');
             $res &= Configuration::deleteByName('HOMESLIDER_WRAP');
@@ -173,7 +173,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
      */
     protected function createTables()
     {
-        /* Slides */
+        // Slides
         $res = (bool)Db::getInstance()->execute('
             CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'homeslider` (
                 `id_homeslider_slides` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -182,7 +182,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=UTF8;
         ');
 
-        /* Slides configuration */
+        // Slides configuration
         $res &= Db::getInstance()->execute('
             CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'homeslider_slides` (
               `id_homeslider_slides` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -192,7 +192,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=UTF8;
         ');
 
-        /* Slides lang configuration */
+        // Slides lang configuration
         $res &= Db::getInstance()->execute('
             CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'homeslider_slides_lang` (
               `id_homeslider_slides` int(10) unsigned NOT NULL,
@@ -229,7 +229,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
     {
         $this->_html .= $this->headerHTML();
 
-        /* Validate & process */
+        // Validate & process
         if (Tools::isSubmit('submitSlide') || Tools::isSubmit('delete_id_slide') ||
             Tools::isSubmit('submitSlider') ||
             Tools::isSubmit('changeStatus')
@@ -291,7 +291,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
     {
         $errors = array();
 
-        /* Validation for Slider configuration */
+        // Validation for Slider configuration
         if (Tools::isSubmit('submitSlider')) {
             if (!Validate::isInt(Tools::getValue('HOMESLIDER_SPEED'))) {
                 $errors[] = $this->getTranslator()->trans('Invalid values', array(), 'Modules.Imageslider.Admin');
@@ -301,21 +301,21 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $errors[] = $this->getTranslator()->trans('Invalid slide', array(), 'Modules.Imageslider.Admin');
             }
         } elseif (Tools::isSubmit('submitSlide')) {
-            /* Checks state (active) */
+            // Checks state (active)
             if (!Validate::isInt(Tools::getValue('active_slide')) || (Tools::getValue('active_slide') != 0 && Tools::getValue('active_slide') != 1)) {
                 $errors[] = $this->getTranslator()->trans('Invalid slide state.', array(), 'Modules.Imageslider.Admin');
             }
-            /* Checks position */
+            // Checks position
             if (!Validate::isInt(Tools::getValue('position')) || (Tools::getValue('position') < 0)) {
                 $errors[] = $this->getTranslator()->trans('Invalid slide position.', array(), 'Modules.Imageslider.Admin');
             }
-            /* If edit : checks id_slide */
+            // If edit : checks id_slide
             if (Tools::isSubmit('id_slide')) {
                 if (!Validate::isInt(Tools::getValue('id_slide')) && !$this->slideExists(Tools::getValue('id_slide'))) {
                     $errors[] = $this->getTranslator()->trans('Invalid slide ID', array(), 'Modules.Imageslider.Admin');
                 }
             }
-            /* Checks title/url/legend/description/image */
+            // Checks title/url/legend/description/image
             $languages = Language::getLanguages(false);
             foreach ($languages as $language) {
                 if (Tools::strlen(Tools::getValue('title_' . $language['id_lang'])) > 255) {
@@ -341,7 +341,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 }
             }
 
-            /* Checks title/url/legend/description for default lang */
+            // Checks title/url/legend/description for default lang
             $id_lang_default = (int)Configuration::get('PS_LANG_DEFAULT');
             if (Tools::strlen(Tools::getValue('url_' . $id_lang_default)) == 0) {
                 $errors[] = $this->getTranslator()->trans('The URL is not set.', array(), 'Modules.Imageslider.Admin');
@@ -356,14 +356,14 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             $errors[] = $this->getTranslator()->trans('Invalid slide ID', array(), 'Modules.Imageslider.Admin');
         }
 
-        /* Display errors if needed */
+        // Display errors if needed
         if (count($errors)) {
             $this->_html .= $this->displayError(implode('<br />', $errors));
 
             return false;
         }
 
-        /* Returns if validation is ok */
+        // Returns if validation is ok
 
         return true;
     }
@@ -373,7 +373,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         $errors = array();
         $shop_context = Shop::getContext();
 
-        /* Processes Slider */
+        // Processes Slider
         if (Tools::isSubmit('submitSlider')) {
             $shop_groups_list = array();
             $shops = Shop::getContextListShopID();
@@ -390,7 +390,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $res &= Configuration::updateValue('HOMESLIDER_WRAP', (int)Tools::getValue('HOMESLIDER_WRAP'), false, $shop_group_id, $shop_id);
             }
 
-            /* Update global shop context if needed*/
+            // Update global shop context if needed
             switch ($shop_context) {
                 case Shop::CONTEXT_ALL:
                     $res &= Configuration::updateValue('HOMESLIDER_SPEED', (int)Tools::getValue('HOMESLIDER_SPEED'));
@@ -433,7 +433,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             $this->clearCache();
             $this->_html .= ($res ? $this->displayConfirmation($this->getTranslator()->trans('Configuration updated', array(), 'Admin.Notifications.Success')) : $this->displayError($this->getTranslator()->trans('The configuration could not be updated.', array(), 'Modules.Imageslider.Admin')));
         } elseif (Tools::isSubmit('submitSlide')) {
-            /* Sets ID if needed */
+            // Sets ID if needed
             if (Tools::getValue('id_slide')) {
                 $slide = new Ps_HomeSlide((int)Tools::getValue('id_slide'));
                 if (!Validate::isLoadedObject($slide)) {
@@ -443,12 +443,12 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             } else {
                 $slide = new Ps_HomeSlide();
             }
-            /* Sets position */
+            // Sets position
             $slide->position = (int)Tools::getValue('position');
-            /* Sets active */
+            // Sets active
             $slide->active = (int)Tools::getValue('active_slide');
 
-            /* Sets each langue fields */
+            // Sets each langue fields
             $languages = Language::getLanguages(false);
 
             foreach ($languages as $language) {
@@ -457,7 +457,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $slide->legend[$language['id_lang']] = Tools::getValue('legend_'.$language['id_lang']);
                 $slide->description[$language['id_lang']] = Tools::getValue('description_'.$language['id_lang']);
 
-                /* Uploads image and sets slide */
+                // Uploads image and sets slide
                 $type = Tools::strtolower(Tools::substr(strrchr($_FILES['image_'.$language['id_lang']]['name'], '.'), 1));
                 $imagesize = @getimagesize($_FILES['image_'.$language['id_lang']]['tmp_name']);
                 if (isset($_FILES['image_'.$language['id_lang']]) &&
@@ -492,9 +492,9 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 }
             }
 
-            /* Processes if no errors  */
+            // Processes if no errors
             if (!$errors) {
-                /* Adds */
+                // Adds
                 if (!Tools::getValue('id_slide')) {
                     if (!$slide->add()) {
                         $errors[] = $this->displayError($this->getTranslator()->trans('The slide could not be added.', array(), 'Modules.Imageslider.Admin'));
@@ -515,7 +515,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             }
         }
 
-        /* Display errors if needed */
+        // Display errors if needed
         if (count($errors)) {
             $this->_html .= $this->displayError(implode('<br />', $errors));
         } elseif (Tools::isSubmit('submitSlide') && Tools::getValue('id_slide')) {
@@ -597,7 +597,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         }
 
         $this->context->controller->addJqueryUI('ui.sortable');
-        /* Style & js for fieldset 'slides configuration' */
+        // Style & js for fieldset 'slides configuration'
         $html = '<script type="text/javascript">
             $(function() {
                 var $mySlides = $("#slides");
