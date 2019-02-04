@@ -77,6 +77,7 @@ class Ps_HomeSlide extends ObjectModel
 			INSERT INTO `'._DB_PREFIX_.'homeslider` (`id_shop`, `id_homeslider_slides`)
 			VALUES('.(int)$id_shop.', '.(int)$this->id.')'
 		);
+
 		return $res;
 	}
 
@@ -100,6 +101,7 @@ class Ps_HomeSlide extends ObjectModel
 		);
 
 		$res &= parent::delete();
+
 		return $res;
 	}
 

@@ -443,6 +443,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $slide = new Ps_HomeSlide((int)Tools::getValue('id_slide'));
                 if (!Validate::isLoadedObject($slide)) {
                     $this->_html .= $this->displayError($this->getTranslator()->trans('Invalid slide ID', array(), 'Modules.Imageslider.Admin'));
+
                     return false;
                 }
             } else {
