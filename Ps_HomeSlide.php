@@ -55,7 +55,7 @@ class Ps_HomeSlide extends ObjectModel
 		)
 	);
 
-	public	function __construct($id_slide = null, $id_lang = null, $id_shop = null, Context $context = null)
+	public function __construct($id_slide = null, $id_lang = null, $id_shop = null, Context $context = null)
 	{
 		parent::__construct($id_slide, $id_lang, $id_shop);
 	}
