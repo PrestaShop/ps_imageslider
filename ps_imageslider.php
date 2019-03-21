@@ -133,6 +133,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             $slide = new Ps_HomeSlide();
             $slide->position = $i;
             $slide->active = 1;
+            $slide->expiration = '2099-12-31 00:00:00';
             foreach ($languages as $language) {
                 $slide->title[$language['id_lang']] = 'Sample '.$i;
                 $slide->description[$language['id_lang']] = '<h3>EXCEPTEUR OCCAECAT</h3>
@@ -188,6 +189,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
               `id_homeslider_slides` int(10) unsigned NOT NULL AUTO_INCREMENT,
               `position` int(10) unsigned NOT NULL DEFAULT \'0\',
               `active` tinyint(1) unsigned NOT NULL DEFAULT \'0\',
+              `expiration` datetime NOT NULL,
               PRIMARY KEY (`id_homeslider_slides`)
             ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=UTF8;
         ');
@@ -447,6 +449,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             $slide->position = (int)Tools::getValue('position');
             /* Sets active */
             $slide->active = (int)Tools::getValue('active_slide');
+            $slide->expiration = Tools::getValue('expiration');
 
             /* Sets each langue fields */
             $languages = Language::getLanguages(false);
@@ -639,7 +642,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         $id_lang = $this->context->language->id;
 
         $slides = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-            SELECT hs.`id_homeslider_slides` as id_slide, hss.`position`, hss.`active`, hssl.`title`,
+            SELECT hs.`id_homeslider_slides` as id_slide, hss.`position`, hss.`active`, hss.`expiration`, hssl.`title`,
             hssl.`url`, hssl.`legend`, hssl.`description`, hssl.`image`
             FROM '._DB_PREFIX_.'homeslider hs
             LEFT JOIN '._DB_PREFIX_.'homeslider_slides hss ON (hs.id_homeslider_slides = hss.id_homeslider_slides)
@@ -771,6 +774,11 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                         'autoload_rte' => true,
                         'lang' => true,
                     ),
+                    array(
+						'type' => 'datetime',
+						'label' => $this->getTranslator()->trans('Expiration date', array(), 'Modules.Imageslider.Admin'),
+						'name' => 'expiration'
+					),
                     array(
                         'type' => 'switch',
                         'label' => $this->getTranslator()->trans('Enabled', array(), 'Admin.Global'),
@@ -955,6 +963,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         }
 
         $fields['active_slide'] = Tools::getValue('active_slide', $slide->active);
+        $fields['expiration'] = Tools::getValue('expiration', $slide->expiration);
         $fields['has_picture'] = true;
 
         $languages = Language::getLanguages(false);
