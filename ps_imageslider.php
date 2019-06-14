@@ -38,6 +38,11 @@ include_once(_PS_MODULE_DIR_.'ps_imageslider/Ps_HomeSlide.php');
 
 class Ps_ImageSlider extends Module implements WidgetInterface
 {
+    /**
+     * @var string Name of the module running on PS 1.6.x. Used for data migration.
+     */
+    const PS_16_EQUIVALENT_MODULE = 'homeslider';
+
     protected $_html = '';
     protected $default_width = 779;
     protected $default_speed = 5000;
@@ -70,57 +75,130 @@ class Ps_ImageSlider extends Module implements WidgetInterface
     public function install()
     {
         /* Adds Module */
-        if (parent::install() &&
-            $this->registerHook('displayHeader') &&
-            $this->registerHook('displayHome') &&
-            $this->registerHook('actionShopDataDuplication')
-        ) {
-            $shops = Shop::getContextListShopID();
-            $shop_groups_list = array();
+        if (!parent::install() ||
+            !$this->registerHook('displayHeader') ||
+            !$this->registerHook('displayHome') ||
+            !$this->registerHook('actionShopDataDuplication')) {
+            return false;
+        }
+    
+        if ($this->uninstallPrestaShop16Module()) {
+            // Migrate data, do not reinitialize it
+            return $this->migrateData();
+        }
+    
+        $shops = Shop::getContextListShopID();
+        $shop_groups_list = array();
 
-            /* Setup each shop */
-            foreach ($shops as $shop_id) {
-                $shop_group_id = (int)Shop::getGroupFromShop($shop_id, true);
+        /* Setup each shop */
+        foreach ($shops as $shop_id) {
+            $shop_group_id = (int)Shop::getGroupFromShop($shop_id, true);
 
-                if (!in_array($shop_group_id, $shop_groups_list)) {
-                    $shop_groups_list[] = $shop_group_id;
-                }
-
-                /* Sets up configuration */
-                $res = Configuration::updateValue('HOMESLIDER_SPEED', $this->default_speed, false, $shop_group_id, $shop_id);
-                $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover, false, $shop_group_id, $shop_id);
-                $res &= Configuration::updateValue('HOMESLIDER_WRAP', $this->default_wrap, false, $shop_group_id, $shop_id);
+            if (!in_array($shop_group_id, $shop_groups_list)) {
+                $shop_groups_list[] = $shop_group_id;
             }
 
-            /* Sets up Shop Group configuration */
-            if (count($shop_groups_list)) {
-                foreach ($shop_groups_list as $shop_group_id) {
-                    $res &= Configuration::updateValue('HOMESLIDER_SPEED', $this->default_speed, false, $shop_group_id);
-                    $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover, false, $shop_group_id);
-                    $res &= Configuration::updateValue('HOMESLIDER_WRAP', $this->default_wrap, false, $shop_group_id);
-                }
-            }
-
-            /* Sets up Global configuration */
-            $res &= Configuration::updateValue('HOMESLIDER_SPEED', $this->default_speed);
-            $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover);
-            $res &= Configuration::updateValue('HOMESLIDER_WRAP', $this->default_wrap);
-
-            /* Creates tables */
-            $res &= $this->createTables();
-
-            /* Adds samples */
-            if ($res) {
-                $this->installSamples();
-            }
-
-            // Disable on mobiles and tablets
-            $this->disableDevice(Context::DEVICE_MOBILE);
-
-            return (bool)$res;
+            /* Sets up configuration */
+            $res = Configuration::updateValue('HOMESLIDER_SPEED', $this->default_speed, false, $shop_group_id, $shop_id);
+            $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover, false, $shop_group_id, $shop_id);
+            $res &= Configuration::updateValue('HOMESLIDER_WRAP', $this->default_wrap, false, $shop_group_id, $shop_id);
         }
 
-        return false;
+        /* Sets up Shop Group configuration */
+        if (count($shop_groups_list)) {
+            foreach ($shop_groups_list as $shop_group_id) {
+                $res &= Configuration::updateValue('HOMESLIDER_SPEED', $this->default_speed, false, $shop_group_id);
+                $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover, false, $shop_group_id);
+                $res &= Configuration::updateValue('HOMESLIDER_WRAP', $this->default_wrap, false, $shop_group_id);
+            }
+        }
+
+        /* Sets up Global configuration */
+        $res &= Configuration::updateValue('HOMESLIDER_SPEED', $this->default_speed);
+        $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover);
+        $res &= Configuration::updateValue('HOMESLIDER_WRAP', $this->default_wrap);
+
+        /* Creates tables */
+        $res &= $this->createTables();
+
+        /* Adds samples */
+        if ($res) {
+            $this->installSamples();
+        }
+
+        // Disable on mobiles and tablets
+        $this->disableDevice(Context::DEVICE_MOBILE);
+
+        return $res;
+    }
+
+    /**
+     * Migrate data from 1.6 equivalent module (if applicable), then uninstall
+     */
+    private function uninstallPrestaShop16Module()
+    {
+        if (!Module::isInstalled(self::PS_16_EQUIVALENT_MODULE)) {
+            return false;
+        }
+        $oldModule = Module::getInstanceByName(self::PS_16_EQUIVALENT_MODULE);
+        if ($oldModule) {
+            // This closure calls the parent class to prevent data to be erased
+            // It allows the new module to be configured without migration
+            $parentUninstallClosure = function() {
+                return parent::uninstall();
+            };
+            $parentUninstallClosure = $parentUninstallClosure->bindTo($oldModule, get_class($oldModule));
+            $parentUninstallClosure();
+        }
+        return true;
+    }
+
+    private function migrateData()
+    {
+        $res = true;
+
+        $shops = Shop::getContextListShopID();
+        $shop_groups_list = array();
+
+        /* Setup each shop */
+        foreach ($shops as $shop_id) {
+            $shop_group_id = (int)Shop::getGroupFromShop($shop_id, true);
+
+            if (!in_array($shop_group_id, $shop_groups_list)) {
+                $shop_groups_list[] = $shop_group_id;
+            }
+
+            /* Sets up configuration */
+            $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover, false, $shop_group_id, $shop_id);
+            $res &= Configuration::updateValue(
+                'HOMESLIDER_WRAP',
+                Configuration::get('HOMESLIDER_WRAP', null, $shop_group_id, $shop_id, $this->default_wrap),
+                false,
+                $shop_group_id,
+                $shop_id
+            );
+        }
+
+        /* Sets up Shop Group configuration */
+        if (count($shop_groups_list)) {
+            foreach ($shop_groups_list as $shop_group_id) {
+                $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover, false, $shop_group_id);
+                $res &= Configuration::updateValue(
+                    'HOMESLIDER_WRAP',
+                    Configuration::get('HOMESLIDER_WRAP', null, $shop_group_id, null, $this->default_wrap),
+                    false,
+                    $shop_group_id);
+            }
+        }
+
+        /* Sets up Global configuration */
+        $res &= Configuration::updateValue('HOMESLIDER_PAUSE_ON_HOVER', $this->default_pause_on_hover);
+        $res &= Configuration::updateValue('HOMESLIDER_WRAP', Configuration::get('HOMESLIDER_WRAP', null, null, null, $this->default_wrap));
+
+        Configuration::deleteByName('HOMESLIDER_WIDTH');
+        Configuration::deleteByName('HOMESLIDER_PAUSE');
+        Configuration::deleteByName('HOMESLIDER_LOOP');
+        return $res;
     }
 
     /**
