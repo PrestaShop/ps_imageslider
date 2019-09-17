@@ -55,6 +55,7 @@
 							</h4>
 							<div class="btn-group-action pull-right">
 								{$slide.status}
+								{$slide.mobile}
 
 								<a class="btn btn-default"
 									href="{$link->getAdminLink('AdminModules')}&configure=ps_imageslider&id_slide={$slide.id_slide}">

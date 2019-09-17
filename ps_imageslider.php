@@ -133,6 +133,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             $slide = new Ps_HomeSlide();
             $slide->position = $i;
             $slide->active = 1;
+            $slide->mobile = 0;
             foreach ($languages as $language) {
                 $slide->title[$language['id_lang']] = 'Sample '.$i;
                 $slide->description[$language['id_lang']] = '<h3>EXCEPTEUR OCCAECAT</h3>
@@ -188,6 +189,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
               `id_homeslider_slides` int(10) unsigned NOT NULL AUTO_INCREMENT,
               `position` int(10) unsigned NOT NULL DEFAULT \'0\',
               `active` tinyint(1) unsigned NOT NULL DEFAULT \'0\',
+              `mobile` tinyint(1) unsigned NOT NULL DEFAULT \'0\',
               PRIMARY KEY (`id_homeslider_slides`)
             ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=UTF8;
         ');
@@ -232,7 +234,8 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         /* Validate & process */
         if (Tools::isSubmit('submitSlide') || Tools::isSubmit('delete_id_slide') ||
             Tools::isSubmit('submitSlider') ||
-            Tools::isSubmit('changeStatus')
+            Tools::isSubmit('changeStatus') ||
+            Tools::isSubmit('mobile')
         ) {
             if ($this->_postValidation()) {
                 $this->_postProcess();
@@ -300,9 +303,17 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             if (!Validate::isInt(Tools::getValue('id_slide'))) {
                 $errors[] = $this->getTranslator()->trans('Invalid slide', array(), 'Modules.Imageslider.Admin');
             }
+        } elseif (Tools::isSubmit('changeMobile')) {
+            if (!Validate::isInt(Tools::getValue('id_slide'))) {
+                $errors[] = $this->getTranslator()->trans('Invalid slide', array(), 'Modules.Imageslider.Admin');
+            }
         } elseif (Tools::isSubmit('submitSlide')) {
             /* Checks state (active) */
             if (!Validate::isInt(Tools::getValue('active_slide')) || (Tools::getValue('active_slide') != 0 && Tools::getValue('active_slide') != 1)) {
+                $errors[] = $this->getTranslator()->trans('Invalid slide state.', array(), 'Modules.Imageslider.Admin');
+            }
+            /* Checks state (mobile) */
+            if (!Validate::isInt(Tools::getValue('mobile_slide')) || (Tools::getValue('mobile_slide') != 0 && Tools::getValue('mobile_slide') != 1)) {
                 $errors[] = $this->getTranslator()->trans('Invalid slide state.', array(), 'Modules.Imageslider.Admin');
             }
             /* Checks position */
@@ -432,6 +443,18 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             $res = $slide->update();
             $this->clearCache();
             $this->_html .= ($res ? $this->displayConfirmation($this->getTranslator()->trans('Configuration updated', array(), 'Admin.Notifications.Success')) : $this->displayError($this->getTranslator()->trans('The configuration could not be updated.', array(), 'Modules.Imageslider.Admin')));
+        
+        } elseif (Tools::isSubmit('changeMobile') && Tools::isSubmit('id_slide')) {
+            $slide = new Ps_HomeSlide((int)Tools::getValue('id_slide'));
+            if ($slide->mobile == 0) {
+                $slide->mobile = 1;
+            } else {
+                $slide->mobile = 0;
+            }
+            $res = $slide->update();
+            $this->clearCache();
+            $this->_html .= ($res ? $this->displayConfirmation($this->getTranslator()->trans('Configuration updated', array(), 'Admin.Notifications.Success')) : $this->displayError($this->getTranslator()->trans('The configuration could not be updated.', array(), 'Modules.Imageslider.Admin')));
+
         } elseif (Tools::isSubmit('submitSlide')) {
             /* Sets ID if needed */
             if (Tools::getValue('id_slide')) {
@@ -447,6 +470,8 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             $slide->position = (int)Tools::getValue('position');
             /* Sets active */
             $slide->active = (int)Tools::getValue('active_slide');
+            /* Sets mobile */
+            $slide->mobile = (int)Tools::getValue('mobile_slide');
 
             /* Sets each langue fields */
             $languages = Language::getLanguages(false);
@@ -543,15 +568,11 @@ class Ps_ImageSlider extends Module implements WidgetInterface
 
     public function getWidgetVariables($hookName = null, array $configuration = [])
     {
-        $slides = $this->getSlides(true);
-        if (is_array($slides)) {
-            foreach ($slides as &$slide) {
-                $slide['sizes'] = @getimagesize((dirname(__FILE__) . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $slide['image']));
-                if (isset($slide['sizes'][3]) && $slide['sizes'][3]) {
-                    $slide['size'] = $slide['sizes'][3];
-                }
-            }
-        }
+        $slides = $this->getSlides(true, false);
+        $this->getWidgetVariablesSlides($slides);
+
+        $slidesMobile = $this->getSlides(true, true);
+        $this->getWidgetVariablesSlides($slidesMobile);
 
         $config = $this->getConfigFieldsValues();
 
@@ -561,8 +582,20 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 'pause' => $config['HOMESLIDER_PAUSE_ON_HOVER'] ? 'hover' : '',
                 'wrap' => $config['HOMESLIDER_WRAP'] ? 'true' : 'false',
                 'slides' => $slides,
+                'slides_mobile' => $slidesMobile,
             ],
         ];
+    }
+
+    private function getWidgetVariablesSlides(&$slides) {
+        if (is_array($slides)) {
+            foreach ($slides as &$slide) {
+                $slide['sizes'] = @getimagesize((dirname(__FILE__) . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $slide['image']));
+                if (isset($slide['sizes'][3]) && $slide['sizes'][3]) {
+                    $slide['size'] = $slide['sizes'][3];
+                }
+            }
+        }
     }
 
     protected function updateUrl($link)
@@ -632,21 +665,22 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         return (++$row['next_position']);
     }
 
-    public function getSlides($active = null)
+    public function getSlides($active = null, $mobile = null)
     {
         $this->context = Context::getContext();
         $id_shop = $this->context->shop->id;
         $id_lang = $this->context->language->id;
 
         $slides = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
-            SELECT hs.`id_homeslider_slides` as id_slide, hss.`position`, hss.`active`, hssl.`title`,
+            SELECT hs.`id_homeslider_slides` as id_slide, hss.`position`, hss.`active`, hss.`mobile`, hssl.`title`,
             hssl.`url`, hssl.`legend`, hssl.`description`, hssl.`image`
             FROM '._DB_PREFIX_.'homeslider hs
             LEFT JOIN '._DB_PREFIX_.'homeslider_slides hss ON (hs.id_homeslider_slides = hss.id_homeslider_slides)
             LEFT JOIN '._DB_PREFIX_.'homeslider_slides_lang hssl ON (hss.id_homeslider_slides = hssl.id_homeslider_slides)
             WHERE id_shop = '.(int)$id_shop.'
             AND hssl.id_lang = '.(int)$id_lang.
-            ($active ? ' AND hss.`active` = 1' : ' ').'
+            ($active ? ' AND hss.`active` = 1' : ' ').
+            ($mobile !== null ? (' AND hss.`mobile` = '.($mobile? '1' : '0')) : ' ').'
             ORDER BY hss.position'
         );
 
@@ -681,6 +715,19 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         return $images;
     }
 
+    public function displayMobile($id_slide, $mobile)
+    {
+        $title = ((int)$mobile == 0 ? $this->getTranslator()->trans('NO mobile', array(), 'Admin.Global') : $this->getTranslator()->trans('Mobile', array(), 'Admin.Global'));
+        $icon = ((int)$mobile == 0 ? 'icon-remove' : 'icon-check');
+        $class = ((int)$mobile == 0 ? 'btn-default' : 'btn-info');
+        $html = '<a class="btn '.$class.'" href="'.AdminController::$currentIndex.
+            '&configure='.$this->name.
+                '&token='.Tools::getAdminTokenLite('AdminModules').
+                '&changeMobile&id_slide='.(int)$id_slide.'" title="'.$title.'"><i class="'.$icon.'"></i> '.$title.'</a>';
+
+        return $html;
+    }
+
     public function displayStatus($id_slide, $active)
     {
         $title = ((int)$active == 0 ? $this->getTranslator()->trans('Disabled', array(), 'Admin.Global') : $this->getTranslator()->trans('Enabled', array(), 'Admin.Global'));
@@ -707,15 +754,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
     public function renderList()
     {
         $slides = $this->getSlides();
-        foreach ($slides as $key => $slide) {
-            $slides[$key]['status'] = $this->displayStatus($slide['id_slide'], $slide['active']);
-            $associated_shop_ids = Ps_HomeSlide::getAssociatedIdsShop((int)$slide['id_slide']);
-            if ($associated_shop_ids && count($associated_shop_ids) > 1) {
-                $slides[$key]['is_shared'] = true;
-            } else {
-                $slides[$key]['is_shared'] = false;
-            }
-        }
+        $this->renderSlides($slides);
 
         $this->context->smarty->assign(
             array(
@@ -726,6 +765,19 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         );
 
         return $this->display(__FILE__, 'list.tpl');
+    }
+
+    private function renderSlides(&$slides) {
+        foreach ($slides as $key => $slide) {
+            $slides[$key]['status'] = $this->displayStatus($slide['id_slide'], $slide['active']);
+            $slides[$key]['mobile'] = $this->displayMobile($slide['id_slide'], $slide['mobile']);
+            $associated_shop_ids = Ps_HomeSlide::getAssociatedIdsShop((int)$slide['id_slide']);
+            if ($associated_shop_ids && count($associated_shop_ids) > 1) {
+                $slides[$key]['is_shared'] = true;
+            } else {
+                $slides[$key]['is_shared'] = false;
+            }
+        }
     }
 
     public function renderAddForm()
@@ -775,6 +827,24 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                         'type' => 'switch',
                         'label' => $this->getTranslator()->trans('Enabled', array(), 'Admin.Global'),
                         'name' => 'active_slide',
+                        'is_bool' => true,
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => 1,
+                                'label' => $this->getTranslator()->trans('Yes', array(), 'Admin.Global')
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => 0,
+                                'label' => $this->getTranslator()->trans('No', array(), 'Admin.Global')
+                            )
+                        ),
+                    ),
+                    array(
+                        'type' => 'switch',
+                        'label' => $this->getTranslator()->trans('Mobile version', array(), 'Admin.Global'),
+                        'name' => 'mobile_slide',
                         'is_bool' => true,
                         'values' => array(
                             array(
@@ -955,6 +1025,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         }
 
         $fields['active_slide'] = Tools::getValue('active_slide', $slide->active);
+        $fields['mobile_slide'] = Tools::getValue('mobile_slide', $slide->mobile);
         $fields['has_picture'] = true;
 
         $languages = Language::getLanguages(false);

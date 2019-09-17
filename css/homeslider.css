@@ -72,3 +72,22 @@
   background-position: right top;
   right: 0;
 }
+
+/* Show or hide mobile slider */
+@media (max-width: 767px) {
+  .homeslider-container-no-mobile {
+    display: none;
+  }
+	.homeslider-container-mobile {
+    display: block;
+  }
+}
+
+@media (min-width: 767px) {
+	.homeslider-container-no-mobile {
+    display: block;
+  }
+	.homeslider-container-mobile {
+    display: none;
+  }
+}

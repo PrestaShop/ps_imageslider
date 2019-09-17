@@ -25,9 +25,34 @@
 *}
 
 {if $homeslider.slides}
-  <div class="homeslider-container" data-interval="{$homeslider.speed}" data-wrap="{$homeslider.wrap}" data-pause="{$homeslider.pause}">
+  <div class="homeslider-container homeslider-container-no-mobile" data-interval="{$homeslider.speed}" data-wrap="{$homeslider.wrap}" data-pause="{$homeslider.pause}">
     <ul class="rslides">
       {foreach from=$homeslider.slides item=slide}
+        <li class="slide">
+          <a href="{$slide.url}">
+            <img src="{$slide.image_url}" alt="{$slide.legend|escape}" />
+            {if $slide.title || $slide.description }
+              <span class="caption">
+                <h2>{$slide.title}</h2>
+                <div>{$slide.description nofilter}</div>
+              </span>
+            {/if}
+          </a>
+        </li>
+      {/foreach}
+    </ul>
+  </div>
+{/if}
+
+{assign var=slides_mobile value=$homeslider.slides_mobile}
+{if !$homeslider.slides_mobile}
+  {assign var=slides_mobile value=$homeslider.slides}
+{/if}
+
+{if $slides_mobile}
+  <div class="homeslider-container homeslider-container-mobile" data-interval="{$homeslider.speed}" data-wrap="{$homeslider.wrap}" data-pause="{$homeslider.pause}">
+    <ul class="rslides-mobile">
+      {foreach from=$slides_mobile item=slide}
         <li class="slide">
           <a href="{$slide.url}">
             <img src="{$slide.image_url}" alt="{$slide.legend|escape}" />
