@@ -33,6 +33,7 @@ class Ps_HomeSlide extends ObjectModel
 	public $image;
 	public $active;
 	public $position;
+	public $mobile;
 	public $id_shop;
 
 	/**
@@ -45,6 +46,7 @@ class Ps_HomeSlide extends ObjectModel
 		'fields' => array(
 			'active' =>			array('type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => true),
 			'position' =>		array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt', 'required' => true),
+			'mobile' =>			array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt', 'required' => true),
 
 			// Lang fields
 			'description' =>	array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 4000),
