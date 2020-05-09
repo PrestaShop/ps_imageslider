@@ -343,9 +343,6 @@ class Ps_ImageSlider extends Module implements WidgetInterface
 
             /* Checks title/url/legend/description for default lang */
             $id_lang_default = (int)Configuration::get('PS_LANG_DEFAULT');
-            if (Tools::strlen(Tools::getValue('url_' . $id_lang_default)) == 0) {
-                $errors[] = $this->getTranslator()->trans('The URL is not set.', array(), 'Modules.Imageslider.Admin');
-            }
             if (!Tools::isSubmit('has_picture') && (!isset($_FILES['image_' . $id_lang_default]) || empty($_FILES['image_' . $id_lang_default]['tmp_name']))) {
                 $errors[] = $this->getTranslator()->trans('The image is not set.', array(), 'Modules.Imageslider.Admin');
             }
@@ -755,7 +752,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                         'type' => 'text',
                         'label' => $this->getTranslator()->trans('Target URL', array(), 'Modules.Imageslider.Admin'),
                         'name' => 'url',
-                        'required' => true,
+                        'required' => false,
                         'lang' => true,
                     ),
                     array(
