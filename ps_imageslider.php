@@ -684,7 +684,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
 
     public function displayStatus($id_slide, $active)
     {
-        $title = ((int)$active == 0 ? $this->getTranslator()->trans('Disabled', array(), 'Admin.Global') : $this->getTranslator()->trans('Enabled', array(), 'Admin.Global'));
+        $title = ((int)$active == 0 ? $this->getTranslator()->trans('No', array(), 'Admin.Global') : $this->getTranslator()->trans('Yes', array(), 'Admin.Global'));
         $icon = ((int)$active == 0 ? 'icon-remove' : 'icon-check');
         $class = ((int)$active == 0 ? 'btn-danger' : 'btn-success');
         $html = '<a class="btn '.$class.'" href="'.AdminController::$currentIndex.
@@ -774,7 +774,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                     ),
                     array(
                         'type' => 'switch',
-                        'label' => $this->getTranslator()->trans('Enabled', array(), 'Admin.Global'),
+                        'label' => $this->getTranslator()->trans('Yes', array(), 'Admin.Global'),
                         'name' => 'active_slide',
                         'is_bool' => true,
                         'values' => array(
@@ -877,12 +877,12 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                             array(
                                 'id' => 'active_on',
                                 'value' => 1,
-                                'label' => $this->getTranslator()->trans('Enabled', array(), 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('Yes', array(), 'Admin.Global')
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => 0,
-                                'label' => $this->getTranslator()->trans('Disabled', array(), 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('No', array(), 'Admin.Global')
                             )
                         ),
                     ),
@@ -895,12 +895,12 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                             array(
                                 'id' => 'active_on',
                                 'value' => 1,
-                                'label' => $this->getTranslator()->trans('Enabled', array(), 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('Yes', array(), 'Admin.Global')
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => 0,
-                                'label' => $this->getTranslator()->trans('Disabled', array(), 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('No', array(), 'Admin.Global')
                             )
                         ),
                     ),
