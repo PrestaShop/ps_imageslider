@@ -102,7 +102,7 @@ class Ps_HomeSlide extends ObjectModel
 		$context = Context::getContext();
 		$id_shop = $context->shop->id;
 
-		$max = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
+		$max = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
 			SELECT MAX(hss.`position`) as position
 			FROM `'._DB_PREFIX_.'homeslider_slides` hss, `'._DB_PREFIX_.'homeslider` hs
 			WHERE hss.`id_homeslider_slides` = hs.`id_homeslider_slides` AND hs.`id_shop` = '.(int)$id_shop
@@ -120,8 +120,8 @@ class Ps_HomeSlide extends ObjectModel
 
 		foreach ($rows as $row)
 		{
-			$current_slide = new Ps_HomeSlide($row['id_slide']);
-			--$current_slide->position;
+			$current_slide = new Ps_HomeSlide((int)$row['id_slide']);
+			$current_slide->position--;
 			$current_slide->update();
 			unset($current_slide);
 		}
