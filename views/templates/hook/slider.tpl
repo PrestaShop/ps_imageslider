@@ -27,17 +27,19 @@
   <div class="homeslider-container" data-interval="{$homeslider.speed}" data-wrap="{$homeslider.wrap}" data-pause="{$homeslider.pause}">
     <ul class="rslides">
       {foreach from=$homeslider.slides item=slide}
-        <li class="slide">
-          <a href="{$slide.url}">
-            <img src="{$slide.image_url}" alt="{$slide.legend|escape}" />
-            {if $slide.title || $slide.description }
-              <span class="caption">
-                <h2>{$slide.title}</h2>
-                <div>{$slide.description nofilter}</div>
-              </span>
-            {/if}
-          </a>
-        </li>
+        {if $slide.active AND $slide.expiration|date_format:'%Y-%m-%d' >= $smarty.now|date_format:'%Y-%m-%d'}
+          <li class="slide">
+            <a href="{$slide.url}">
+              <img src="{$slide.image_url}" alt="{$slide.legend|escape}" />
+              {if $slide.title || $slide.description }
+                <span class="caption">
+                  <h2>{$slide.title}</h2>
+                  <div>{$slide.description nofilter}</div>
+                </span>
+              {/if}
+            </a>
+          </li>
+        {/if}
       {/foreach}
     </ul>
   </div>
