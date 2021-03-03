@@ -45,6 +45,7 @@
 						<div class="col-md-8">
 							<h4 class="pull-left">
 								#{$slide.id_slide} - {$slide.title}
+								{if $slide.expiration|date_format:'%Y-%m-%d' >= $smarty.now|date_format:'%Y-%m-%d' }<span style="color:green">{$slide.expiration}</span>{else}<span style="color:red">{$slide.expiration}</span>{/if}
 								{if $slide.is_shared}
 									<div>
 										<span class="label color_field pull-left" style="background-color:#108510;color:white;margin-top:5px;">
