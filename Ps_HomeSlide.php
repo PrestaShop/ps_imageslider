@@ -30,6 +30,7 @@ class Ps_HomeSlide extends ObjectModel
 	public $description;
 	public $url;
 	public $legend;
+	public $expiration;
 	public $image;
 	public $active;
 	public $position;
@@ -45,7 +46,8 @@ class Ps_HomeSlide extends ObjectModel
 		'fields' => array(
 			'active' =>			array('type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => true),
 			'position' =>		array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt', 'required' => true),
-
+                        'expiration' =>		array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
+			
 			// Lang fields
 			'description' =>	array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 4000),
 			'title' =>			array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isCleanHtml', 'size' => 255),
