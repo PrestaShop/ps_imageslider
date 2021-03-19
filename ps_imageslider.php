@@ -80,6 +80,9 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             $this->registerHook('displayHome') &&
             $this->registerHook('actionShopDataDuplication')
         ) {
+            //Fix slider position to the top
+            $this->updatePosition(Hook::getIdByName('displayHome'), false, 1);
+            
             $shops = Shop::getContextListShopID();
             $shop_groups_list = array();
 
