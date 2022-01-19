@@ -151,7 +151,8 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $slide->url[$language['id_lang']] = 'http://www.prestashop.com/?utm_source=back-office&utm_medium=v17_homeslider'
                     . '&utm_campaign=back-office-' . Tools::strtoupper($this->context->language->iso_code)
                     . '&utm_content=' . (defined('_PS_HOST_MODE_') ? 'ondemand' : 'download');
-                $slide->image[$language['id_lang']] = 'sample-' . $i . ($language['is_rtl'] ? '-rtl' : '') . '.jpg';
+                $rtlSuffix = $language['is_rtl'] ? '-rtl' : '';
+                $slide->image[$language['id_lang']] = "sample-{$i}{$rtlSuffix}.jpg";
             }
             $slide->add();
         }
