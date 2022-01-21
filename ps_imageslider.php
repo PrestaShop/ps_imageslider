@@ -467,11 +467,16 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $slide->description[$language['id_lang']] = Tools::getValue('description_' . $language['id_lang']);
 
                 /* Uploads image and sets slide */
-                $type = Tools::strtolower(Tools::substr(strrchr($_FILES['image_' . $language['id_lang']]['name'], '.'), 1));
-                $imagesize = @getimagesize($_FILES['image_' . $language['id_lang']]['tmp_name']);
+                $type = '';
+                $imagesize = 0;
                 if (isset($_FILES['image_' . $language['id_lang']]) &&
                     isset($_FILES['image_' . $language['id_lang']]['tmp_name']) &&
-                    !empty($_FILES['image_' . $language['id_lang']]['tmp_name']) &&
+                    !empty($_FILES['image_' . $language['id_lang']]['tmp_name'])
+                ) {
+                    $type = Tools::strtolower(Tools::substr(strrchr($_FILES['image_' . $language['id_lang']]['name'], '.'), 1));
+                    $imagesize = @getimagesize($_FILES['image_' . $language['id_lang']]['tmp_name']);
+                }
+                if (!empty($type) &&
                     !empty($imagesize) &&
                     in_array(
                         Tools::strtolower(Tools::substr(strrchr($imagesize['mime'], '/'), 1)), [
@@ -831,7 +836,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         $lang = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
         $helper->default_form_language = $lang->id;
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
-        $helper->fields_form = [];
+        $this->fields_form = [];
         $helper->module = $this;
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitSlide';
@@ -927,8 +932,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         $lang = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
         $helper->default_form_language = $lang->id;
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
-        $helper->fields_form = [];
-
+        $this->fields_form = [];
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitSlider';
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
