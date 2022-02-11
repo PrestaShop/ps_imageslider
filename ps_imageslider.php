@@ -151,7 +151,8 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $slide->url[$language['id_lang']] = 'http://www.prestashop.com/?utm_source=back-office&utm_medium=v17_homeslider'
                     . '&utm_campaign=back-office-' . Tools::strtoupper($this->context->language->iso_code)
                     . '&utm_content=' . (defined('_PS_HOST_MODE_') ? 'ondemand' : 'download');
-                $slide->image[$language['id_lang']] = 'sample-' . $i . '.jpg';
+                $rtlSuffix = $language['is_rtl'] ? '-rtl' : '';
+                $slide->image[$language['id_lang']] = "sample-{$i}{$rtlSuffix}.jpg";
             }
             $slide->add();
         }
@@ -466,11 +467,16 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $slide->description[$language['id_lang']] = Tools::getValue('description_' . $language['id_lang']);
 
                 /* Uploads image and sets slide */
-                $type = Tools::strtolower(Tools::substr(strrchr($_FILES['image_' . $language['id_lang']]['name'], '.'), 1));
-                $imagesize = @getimagesize($_FILES['image_' . $language['id_lang']]['tmp_name']);
+                $type = '';
+                $imagesize = 0;
                 if (isset($_FILES['image_' . $language['id_lang']]) &&
                     isset($_FILES['image_' . $language['id_lang']]['tmp_name']) &&
-                    !empty($_FILES['image_' . $language['id_lang']]['tmp_name']) &&
+                    !empty($_FILES['image_' . $language['id_lang']]['tmp_name'])
+                ) {
+                    $type = Tools::strtolower(Tools::substr(strrchr($_FILES['image_' . $language['id_lang']]['name'], '.'), 1));
+                    $imagesize = @getimagesize($_FILES['image_' . $language['id_lang']]['tmp_name']);
+                }
+                if (!empty($type) &&
                     !empty($imagesize) &&
                     in_array(
                         Tools::strtolower(Tools::substr(strrchr($imagesize['mime'], '/'), 1)), [
