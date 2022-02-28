@@ -470,7 +470,6 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $type = '';
                 $imagesize = 0;
                 if (isset($_FILES['image_' . $language['id_lang']]) &&
-                    isset($_FILES['image_' . $language['id_lang']]['tmp_name']) &&
                     !empty($_FILES['image_' . $language['id_lang']]['tmp_name'])
                 ) {
                     $type = Tools::strtolower(Tools::substr(strrchr($_FILES['image_' . $language['id_lang']]['name'], '.'), 1));
