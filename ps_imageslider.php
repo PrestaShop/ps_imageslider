@@ -663,7 +663,8 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             LEFT JOIN ' . _DB_PREFIX_ . 'homeslider_slides hss ON (hs.id_homeslider_slides = hss.id_homeslider_slides)
             LEFT JOIN ' . _DB_PREFIX_ . 'homeslider_slides_lang hssl ON (hss.id_homeslider_slides = hssl.id_homeslider_slides)
             WHERE id_shop = ' . (int) $id_shop . '
-            AND hssl.id_lang = ' . (int) $id_lang .
+            AND hssl.id_lang = ' . (int) $id_lang . '
+            AND hssl.`image` <> ""' .
             ($active ? ' AND hss.`active` = 1' : ' ') . '
             ORDER BY hss.position'
         );
