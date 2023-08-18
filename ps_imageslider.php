@@ -62,7 +62,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
 
         $this->displayName = $this->trans('Image slider', [], 'Modules.Imageslider.Admin');
         $this->description = $this->trans('Add sliding images to your homepage to welcome your visitors in a visual and friendly way.', [], 'Modules.Imageslider.Admin');
-        $this->ps_versions_compliancy = ['min' => '1.7.4.0', 'max' => _PS_VERSION_];
+        $this->ps_versions_compliancy = ['min' => '8.0.0', 'max' => _PS_VERSION_];
 
         $this->templateFile = 'module:ps_imageslider/views/templates/hook/slider.tpl';
     }
