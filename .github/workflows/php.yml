@@ -8,7 +8,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.0.0
-
+      - name: PHP syntax checker 7.2
+        uses: prestashop/github-action-php-lint/7.2@master
+      - name: PHP syntax checker 7.3
+        uses: prestashop/github-action-php-lint/7.3@master
+      - name: PHP syntax checker 7.4
+        uses: prestashop/github-action-php-lint/7.4@master
+      - name: PHP syntax checker 8.0
+        uses: prestashop/github-action-php-lint/8.0@master
       - name: PHP syntax checker 8.1
         uses: prestashop/github-action-php-lint/8.1@master
 
@@ -43,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        presta-versions: ['8.1.0', 'latest']
+        presta-versions: ['8.0.0', '8.1.0', 'latest']
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
