@@ -38,6 +38,10 @@ include_once __DIR__ . '/Ps_HomeSlide.php';
 
 class Ps_ImageSlider extends Module implements WidgetInterface
 {
+    public $adminControllers = [
+        'adminConfigureSlides' => 'AdminConfigureSlides',
+    ];
+
     protected $_html = '';
     protected $default_speed = 5000;
     protected $default_pause_on_hover = 1;
@@ -119,6 +123,9 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $this->installSamples();
             }
 
+            // Disable on mobiles and tablets
+            $this->disableDevice(Context::DEVICE_MOBILE);
+
             return (bool) $res;
         }
 
@@ -140,7 +147,9 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 $slide->description[$language['id_lang']] = '<h3>EXCEPTEUR OCCAECAT</h3>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tristique in tortor et dignissim. Quisque non tempor leo. Maecenas egestas sem elit</p>';
                 $slide->legend[$language['id_lang']] = 'sample-' . $i;
-                $slide->url[$language['id_lang']] = 'https://www.prestashop-project.org';
+                $slide->url[$language['id_lang']] = 'https://www.prestashop-project.org?utm_source=back-office&utm_medium=v17_homeslider'
+                    . '&utm_campaign=back-office-' . Tools::strtoupper($this->context->language->iso_code)
+                    . '&utm_content=' . (defined('_PS_HOST_MODE_') ? 'ondemand' : 'download');
                 $rtlSuffix = $language['is_rtl'] ? '_rtl' : '';
                 $slide->image[$language['id_lang']] = sprintf('sample-%d%s.jpg', $i, $rtlSuffix);
             }
@@ -619,6 +628,8 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             return;
         }
 
+                    //$.post("' . $this->context->shop->physical_uri . $this->context->shop->virtual_uri . 'modules/' . $this->name . '/ajax_' . $this->name . '.php?secure_key=' . $this->secure_key . '", order);
+
         $this->context->controller->addJS($this->_path . 'js/Sortable.min.js');
         /* Style & js for fieldset 'slides configuration' */
         $html = '<script type="text/javascript">
@@ -627,8 +638,21 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 new Sortable($mySlides[0], {
                   animation: 150,
                   onUpdate: function(event) {
-                    var order = this.toArray().join("&") + "&action=updateSlidesPosition";
-                    $.post("' . $this->context->shop->physical_uri . $this->context->shop->virtual_uri . 'modules/' . $this->name . '/ajax_' . $this->name . '.php?secure_key=' . $this->secure_key . '", order);
+                    var sortableIdsAsTableString = this.toArray();
+                    var sortableIdsAsData = sortableIdsAsTableString.map((x) => x.slice(-1));
+                    var ajaxCallParameters = {
+                        ajax: true,
+                        action: "updateSlidesPosition",
+                        secure_key: "'.$this->secure_key.'",
+                        token: "'.Tools::getAdminTokenLite('AdminConfigureSlides') .'",
+                        slides: sortableIdsAsData
+                    };
+                    $.ajax({
+                      type: "POST",
+                      cache: false,
+                      url: "'.$this->context->link->getAdminLink('AdminConfigureSlides', false).'",
+                      data: ajaxCallParameters
+                    });
                   }
                 });
                 $mySlides.hover(function() {
