@@ -48,6 +48,10 @@ class Ps_ImageSlider extends Module implements WidgetInterface
      */
     public $secure_key;
 
+    public $adminControllers = [
+        'adminConfigureSlides' => 'AdminConfigureSlides',
+    ];
+
     public function __construct()
     {
         $this->name = 'ps_imageslider';
@@ -628,8 +632,21 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 new Sortable($mySlides[0], {
                   animation: 150,
                   onUpdate: function(event) {
-                    var order = this.toArray().join("&") + "&action=updateSlidesPosition";
-                    $.post("' . $this->context->shop->physical_uri . $this->context->shop->virtual_uri . 'modules/' . $this->name . '/ajax_' . $this->name . '.php?secure_key=' . $this->secure_key . '", order);
+                    var sortableIdsAsTableString = this.toArray();
+                    var sortableIdsAsData = sortableIdsAsTableString.map((x) => x.slice(-1));
+                    var ajaxCallParameters = {
+                        ajax: true,
+                        action: "updateSlidesPosition",
+                        secure_key: "'.$this->secure_key.'",
+                        token: "'.Tools::getAdminTokenLite('AdminConfigureSlides') .'",
+                        slides: sortableIdsAsData
+                    };
+                    $.ajax({
+                      type: "POST",
+                      cache: false,
+                      url: "'.$this->context->link->getAdminLink('AdminConfigureSlides', false).'",
+                      data: ajaxCallParameters
+                    });
                   }
                 });
                 $mySlides.hover(function() {
