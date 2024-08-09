@@ -338,6 +338,9 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 if (Tools::getValue('image_old_' . $language['id_lang']) != null && !Validate::isFileName(Tools::getValue('image_old_' . $language['id_lang']))) {
                     $errors[] = $this->trans('Invalid filename.', [], 'Modules.Imageslider.Admin');
                 }
+                if (!Tools::isSubmit('has_picture') && (!isset($_FILES['image_' . $language['id_lang']]) || empty($_FILES['image_' . $language['id_lang']]['tmp_name']))) {
+                    $errors[] = $this->trans('The image is not set.', [], 'Modules.Imageslider.Admin');
+                }
             }
 
             /* Checks title/legend/description for default lang */
@@ -613,10 +616,12 @@ class Ps_ImageSlider extends Module implements WidgetInterface
 
     public function headerHTML()
     {
-        if ('AdminModules' !== Tools::getValue('controller') ||
+        if (
+            'AdminModules' !== Tools::getValue('controller') ||
             Tools::getValue('configure') !== $this->name ||
             Tools::getIsset('id_slide') ||
-            Tools::getIsset('addSlide')) {
+            Tools::getIsset('addSlide')
+        ) {
             return;
         }
 
@@ -677,8 +682,8 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             LEFT JOIN ' . _DB_PREFIX_ . 'homeslider_slides_lang hssl ON (hss.id_homeslider_slides = hssl.id_homeslider_slides)
             WHERE id_shop = ' . (int) $id_shop . '
             AND hssl.id_lang = ' . (int) $id_lang .
-            ($forceShowAll ? '' : ' AND hssl.`image` <> ""') .
-            ($active ? ' AND hss.`active` = 1' : ' ') . '
+                ($forceShowAll ? '' : ' AND hssl.`image` <> ""') .
+                ($active ? ' AND hss.`active` = 1' : ' ') . '
             ORDER BY hss.position'
         );
 
@@ -705,7 +710,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
             LEFT JOIN ' . _DB_PREFIX_ . 'homeslider_slides hss ON (hs.id_homeslider_slides = hss.id_homeslider_slides)
             LEFT JOIN ' . _DB_PREFIX_ . 'homeslider_slides_lang hssl ON (hss.id_homeslider_slides = hssl.id_homeslider_slides)
             WHERE hs.`id_homeslider_slides` = ' . (int) $id_slides . ' AND hs.`id_shop` = ' . (int) $id_shop .
-            ($active ? ' AND hss.`active` = 1' : ' ')
+                ($active ? ' AND hss.`active` = 1' : ' ')
         );
 
         foreach ($results as $result) {
@@ -789,7 +794,6 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                         'type' => 'text',
                         'label' => $this->trans('Target URL', [], 'Modules.Imageslider.Admin'),
                         'name' => 'url',
-                        'required' => true,
                         'lang' => true,
                     ],
                     [
