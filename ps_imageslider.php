@@ -789,6 +789,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                         'type' => 'text',
                         'label' => $this->trans('Target URL', [], 'Modules.Imageslider.Admin'),
                         'name' => 'url',
+                        'required' => true,
                         'lang' => true,
                     ],
                     [
