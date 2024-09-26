@@ -43,6 +43,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
     protected $default_pause_on_hover = 1;
     protected $default_wrap = 1;
     protected $templateFile;
+    const SUPPORTED_MIME_TYPES = ['jpg', 'gif', 'jpeg', 'png', 'avif', 'webp'];
     /**
      * @var string
      */
@@ -503,14 +504,9 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                     !empty($imagesize) &&
                     in_array(
                         Tools::strtolower(Tools::substr(strrchr($imagesize['mime'], '/'), 1)),
-                        [
-                            'jpg',
-                            'gif',
-                            'jpeg',
-                            'png',
-                        ]
+                        self::SUPPORTED_MIME_TYPES
                     ) &&
-                    in_array($type, ['jpg', 'gif', 'jpeg', 'png'])
+                    in_array($type, self::SUPPORTED_MIME_TYPES)
                 ) {
                     $temp_name = tempnam(_PS_TMP_IMG_DIR_, 'PS');
                     $salt = sha1(microtime());
