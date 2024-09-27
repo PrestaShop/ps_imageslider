@@ -519,7 +519,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                     } elseif (!$temp_name || !move_uploaded_file($_FILES['image_' . $language['id_lang']]['tmp_name'], $temp_name)) {
                         return false;
                     } elseif (!ImageManager::resize($temp_name, __DIR__ . '/images/' . $salt . '_' . $_FILES['image_' . $language['id_lang']]['name'], null, null, $type)) {
-                        $errors[] = $this->displayError($this->trans('An error occurred during the image upload process.', [], 'Admin.Notifications.Error'));
+                        $errors[] = $this->trans('An error occurred during the image upload process.', [], 'Admin.Notifications.Error');
                     }
                     if (file_exists($temp_name)) {
                         @unlink($temp_name);
@@ -527,6 +527,8 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                     $slide->image[$language['id_lang']] = $salt . '_' . $_FILES['image_' . $language['id_lang']]['name'];
                 } elseif (Tools::getValue('image_old_' . $language['id_lang']) != '') {
                     $slide->image[$language['id_lang']] = Tools::getValue('image_old_' . $language['id_lang']);
+                } else {
+                    $errors[] = $this->trans('Image format not recognized, allowed formats are: jpg, gif, jpeg, png.', [], 'Admin.Notifications.Error');
                 }
             }
 
@@ -535,10 +537,10 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 /* Adds */
                 if (!Tools::getValue('id_slide')) {
                     if (!$slide->add()) {
-                        $errors[] = $this->displayError($this->trans('The slide could not be added.', [], 'Modules.Imageslider.Admin'));
+                        $errors[] = $this->trans('The slide could not be added.', [], 'Modules.Imageslider.Admin');
                     }
                 } elseif (!$slide->update()) {
-                    $errors[] = $this->displayError($this->trans('The slide could not be updated.', [], 'Modules.Imageslider.Admin'));
+                    $errors[] = $this->trans('The slide could not be updated.', [], 'Modules.Imageslider.Admin');
                 }
                 $this->clearCache();
             }
