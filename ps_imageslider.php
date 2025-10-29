@@ -773,9 +773,9 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         $icon = ((int) $active == 0 ? 'icon-remove' : 'icon-check');
         $class = ((int) $active == 0 ? 'btn-danger' : 'btn-success');
         $html = '<a class="btn ' . $class . '" href="' . $this->context->link->getAdminLink('AdminModules', true, [], [
-            'configure'    => $this->name,
+            'configure' => $this->name,
             'changeStatus' => '1',
-            'id_slide'     => (int) $id_slide,
+            'id_slide' => (int) $id_slide,
         ]) . '" title="' . $title . '"><i class="' . $icon . '"></i> ' . $title . '</a>';
 
         return $html;
