@@ -772,10 +772,11 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         $title = ((int) $active == 0 ? $this->trans('Disabled', [], 'Admin.Global') : $this->trans('Enabled', [], 'Admin.Global'));
         $icon = ((int) $active == 0 ? 'icon-remove' : 'icon-check');
         $class = ((int) $active == 0 ? 'btn-danger' : 'btn-success');
-        $html = '<a class="btn ' . $class . '" href="' . AdminController::$currentIndex .
-            '&configure=' . $this->name .
-            '&token=' . Tools::getAdminTokenLite('AdminModules') .
-            '&changeStatus&id_slide=' . (int) $id_slide . '" title="' . $title . '"><i class="' . $icon . '"></i> ' . $title . '</a>';
+        $html = '<a class="btn ' . $class . '" href="' . $this->context->link->getAdminLink('AdminModules', true, [], [
+            'configure' => $this->name,
+            'changeStatus' => '1',
+            'id_slide' => (int) $id_slide,
+        ]) . '" title="' . $title . '"><i class="' . $icon . '"></i> ' . $title . '</a>';
 
         return $html;
     }
