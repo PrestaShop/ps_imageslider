@@ -20,3 +20,4 @@ GitHub contributors:
 - toutantic
 - tucoinfo
 - xBorderie
+- agentpietrucha

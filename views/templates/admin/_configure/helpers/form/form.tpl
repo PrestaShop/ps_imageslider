@@ -28,7 +28,15 @@
 					{/if}
 						<div class="col-lg-{if $languages|count > 1}10{else}12{/if}">
 							{if isset($fields[0]['form']['images'])}
-							<img src="{$image_baseurl}{$fields[0]['form']['images'][$language.id_lang]}" class="img-thumbnail" />
+								{assign var=file_type value="."|explode:$fields[0]['form']['images'][$language.id_lang]|@end}
+								{if $file_type|in_array:['mp4']}
+									{assign var=poster value=$fields[0]['form']['poster'][$language.id_lang]}
+									<video class="img-thumbnail" {if $poster}poster="{$image_baseurl}{$poster}"{/if} controls autoplay playsinline muted>
+										<source type="video/mp4" src="{$image_baseurl}{$fields[0]['form']['images'][$language.id_lang]}" alt="{$slide.title}"/>
+									</video>
+								{else}
+									<img src="{$image_baseurl}{$fields[0]['form']['images'][$language.id_lang]}" class="img-thumbnail" />
+								{/if}
 							{/if}
 							<div class="dummyfile input-group">
 								<input id="{$input.name}_{$language.id_lang}" type="file" name="{$input.name}_{$language.id_lang}" class="hide-file-upload" />

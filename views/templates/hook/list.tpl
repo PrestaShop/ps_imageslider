@@ -34,7 +34,14 @@
 							<span><i class="icon-arrows "></i></span>
 						</div>
 						<div class="col-md-3">
-							<img src="{$image_baseurl}{$slide.image}" alt="{$slide.title}" class="img-thumbnail" />
+							{assign var=file_type value="."|explode:$slide.image|@end}
+							{if $file_type|in_array:['mp4']}
+								<video class="img-thumbnail" {if $slide.poster}poster="{$image_baseurl}{$slide.poster}"{/if} controls autoplay playsinline muted>
+									<source type="video/mp4" src="{$image_baseurl}{$slide.image}" alt="{$slide.title}"/>
+								</video>
+							{else}
+								<img src="{$image_baseurl}{$slide.image}" alt="{$slide.title}" class="img-thumbnail" />
+							{/if}
 						</div>
 						<div class="col-md-8">
 							<h4 class="pull-left">
