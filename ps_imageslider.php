@@ -52,7 +52,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
     {
         $this->name = 'ps_imageslider';
         $this->tab = 'front_office_features';
-        $this->version = '3.2.1';
+        $this->version = '3.2.2';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->secure_key = Tools::hash($this->name);
@@ -514,17 +514,18 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 ) {
                     $temp_name = tempnam(_PS_TMP_IMG_DIR_, 'PS');
                     $salt = sha1(microtime());
+                    $file_name = Tools::str2url($_FILES['image_' . $language['id_lang']]['name']) . $type;
                     if ($error = ImageManager::validateUpload($_FILES['image_' . $language['id_lang']])) {
                         $errors[] = $error;
                     } elseif (!$temp_name || !move_uploaded_file($_FILES['image_' . $language['id_lang']]['tmp_name'], $temp_name)) {
                         return false;
-                    } elseif (!ImageManager::resize($temp_name, __DIR__ . '/images/' . $salt . '_' . $_FILES['image_' . $language['id_lang']]['name'], null, null, $type)) {
+                    } elseif (!ImageManager::resize($temp_name, __DIR__ . '/images/' . $salt . '_' . $file_name, null, null, $type)) {
                         $errors[] = $this->displayError($this->trans('An error occurred during the image upload process.', [], 'Admin.Notifications.Error'));
                     }
                     if (file_exists($temp_name)) {
                         @unlink($temp_name);
                     }
-                    $slide->image[$language['id_lang']] = $salt . '_' . $_FILES['image_' . $language['id_lang']]['name'];
+                    $slide->image[$language['id_lang']] = $salt . '_' . $file_name;
                 } elseif (Tools::getValue('image_old_' . $language['id_lang']) != '') {
                     $slide->image[$language['id_lang']] = Tools::getValue('image_old_' . $language['id_lang']);
                 }
@@ -771,10 +772,11 @@ class Ps_ImageSlider extends Module implements WidgetInterface
         $title = ((int) $active == 0 ? $this->trans('Disabled', [], 'Admin.Global') : $this->trans('Enabled', [], 'Admin.Global'));
         $icon = ((int) $active == 0 ? 'icon-remove' : 'icon-check');
         $class = ((int) $active == 0 ? 'btn-danger' : 'btn-success');
-        $html = '<a class="btn ' . $class . '" href="' . AdminController::$currentIndex .
-            '&configure=' . $this->name .
-            '&token=' . Tools::getAdminTokenLite('AdminModules') .
-            '&changeStatus&id_slide=' . (int) $id_slide . '" title="' . $title . '"><i class="' . $icon . '"></i> ' . $title . '</a>';
+        $html = '<a class="btn ' . $class . '" href="' . $this->context->link->getAdminLink('AdminModules', true, [], [
+            'configure' => $this->name,
+            'changeStatus' => '1',
+            'id_slide' => (int) $id_slide,
+        ]) . '" title="' . $title . '"><i class="' . $icon . '"></i> ' . $title . '</a>';
 
         return $html;
     }

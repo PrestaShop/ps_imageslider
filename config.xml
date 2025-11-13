@@ -2,7 +2,7 @@
 <module>
     <name>ps_imageslider</name>
     <displayName><![CDATA[Image slider]]></displayName>
-    <version><![CDATA[3.2.1]]></version>
+    <version><![CDATA[3.2.2]]></version>
     <description><![CDATA[Adds an image slider to your site.]]></description>
     <author><![CDATA[PrestaShop]]></author>
     <tab><![CDATA[front_office_features]]></tab>
