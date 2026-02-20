@@ -44,7 +44,7 @@ class AdminConfigureSlidesController extends ModuleAdminController
         $this->module->clearCache();
 
         if (ob_get_contents()) {
-			ob_end_clean();
+		    ob_end_clean();
         }
 
         header('Content-Type: application/json');
