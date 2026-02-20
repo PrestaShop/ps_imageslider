@@ -22,7 +22,7 @@ class AdminConfigureSlidesController extends ModuleAdminController
     public function ajaxProcessUpdateSlidesPosition()
     {
         if (empty(Tools::getValue('action')) || Tools::getValue('action') != 'updateSlidesPosition' || empty(Tools::getValue('slides'))) {
-			if (ob_get_contents()) {
+            if (ob_get_contents()) {
 	            ob_end_clean();
 	        }
 			
