@@ -23,7 +23,7 @@ class AdminConfigureSlidesController extends ModuleAdminController
     {
         if (empty(Tools::getValue('action')) || Tools::getValue('action') != 'updateSlidesPosition' || empty(Tools::getValue('slides'))) {
             if (ob_get_contents()) {
-	            ob_end_clean();
+                ob_end_clean();
             }
 
             header('Content-Type: application/json');
@@ -44,7 +44,7 @@ class AdminConfigureSlidesController extends ModuleAdminController
         $this->module->clearCache();
 
         if (ob_get_contents()) {
-		    ob_end_clean();
+            ob_end_clean();
         }
 
         header('Content-Type: application/json');
