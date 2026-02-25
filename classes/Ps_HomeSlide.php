@@ -59,7 +59,7 @@ class Ps_HomeSlide extends ObjectModel
 			VALUES(' . (int) $id_shop . ', ' . (int) $this->id . ')'
         );
 
-        return $res;
+        return (bool) $res;
     }
 
     public function delete()
@@ -84,7 +84,7 @@ class Ps_HomeSlide extends ObjectModel
 
         $res &= parent::delete();
 
-        return $res;
+        return (bool) $res;
     }
 
     public function reOrderPositions()

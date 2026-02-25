@@ -1,0 +1,7 @@
+includes:
+	- %currentWorkingDirectory%/tests/php/phpstan/phpstan.neon
+
+parameters:
+  ignoreErrors:
+    - '#Call to an undefined method Module\:\:clearCache\(\).#'
+    - '#Offset ''url'' does not exist on array\{image_url: string\}\.#'

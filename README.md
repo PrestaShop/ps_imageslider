@@ -6,7 +6,7 @@ Add sliding images to your homepage to welcome your visitors in a visual and fri
 
 ## Compatibility
 
-PrestaShop: `1.7.5.0` or later
+PrestaShop: `8.1.0` or later
 
 ## Multistore compatibility
 
