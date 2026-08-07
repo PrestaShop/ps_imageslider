@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        presta_version: ['9.0.x']
+        presta_version: ['9.0.3']
         php_version: ['8.1', '8.4']
       fail-fast: false
     env:
@@ -83,7 +83,7 @@ jobs:
         with:
           path: ${{ github.event.repository.name }}
 
-      - name: Prepare PHP env for PrestaShop 9.0.x (define constants before any bootstrap)
+      - name: Prepare PHP env for PrestaShop 9.0.3 (define constants before any bootstrap)
         run: |
           mkdir -p ${{ github.event.repository.name }}/.phpstan-php-ini
           {
