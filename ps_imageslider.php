@@ -369,6 +369,9 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 if (Tools::getValue('image_old_' . $language['id_lang']) != null && !Validate::isFileName(Tools::getValue('image_old_' . $language['id_lang']))) {
                     $errors[] = $this->trans('Invalid filename.', [], 'Modules.Imageslider.Admin');
                 }
+                if (!Tools::isSubmit('has_picture') && (!isset($_FILES['image_' . $language['id_lang']]) || empty($_FILES['image_' . $language['id_lang']]['tmp_name']))) {
+                    $errors[] = $this->trans('The image is not set.', [], 'Modules.Imageslider.Admin');
+                }
             }
 
             /* Checks title/legend/description for default lang */
