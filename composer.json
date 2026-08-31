@@ -25,5 +25,8 @@
             "ps_imageslider.php"
         ]
     },
-    "author": "PrestaShop"
+    "author": "PrestaShop",
+    "archive": {
+        "exclude": [".github", "tests", ".php-cs-fixer.dist.php"]
+    }
 }
