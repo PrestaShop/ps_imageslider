@@ -514,7 +514,7 @@ class Ps_ImageSlider extends Module implements WidgetInterface
                 ) {
                     $temp_name = tempnam(_PS_TMP_IMG_DIR_, 'PS');
                     $salt = sha1(microtime());
-                    $file_name = Tools::str2url($_FILES['image_' . $language['id_lang']]['name']) . $type;
+                    $file_name = Tools::str2url(pathinfo($_FILES['image_' . $language['id_lang']]['name'], PATHINFO_FILENAME)) . '.' . $type;
                     if ($error = ImageManager::validateUpload($_FILES['image_' . $language['id_lang']])) {
                         $errors[] = $error;
                     } elseif (!$temp_name || !move_uploaded_file($_FILES['image_' . $language['id_lang']]['tmp_name'], $temp_name)) {
